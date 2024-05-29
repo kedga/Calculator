@@ -23,8 +23,6 @@ public class AskYesOrNoOptions
 }
 public class MakeSelectionOptions<T>
 {
-	//public T[] Options { get; set; } = [];
-	//public string[] OptionNames { get; set; } = [];
 	public List<T> Options { get; set; } = [];
 	public List<string> OptionNames { get; set; } = [];
 	public string Prompt { get; set; } = string.Empty;
@@ -34,10 +32,4 @@ public class MakeSelectionOptions<T>
 		optionNames = OptionNames;
 		prompt = Prompt;
 	}
-	//public void Deconstruct(out T[] options, out string[] optionNames, out string prompt)
-	//{
-	//	options = Options;
-	//	optionNames = OptionNames;
-	//	prompt = Prompt;
-	//}
 }
