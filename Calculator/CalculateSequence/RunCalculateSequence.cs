@@ -46,13 +46,11 @@ public static class RunCalculateSequence
 
 			var operations = calculator.GetOperations();
 
-			var prompt = "Select operation to perform on sequence: [" + numbers.PrintCollection() + "]\n";
-
 			var operation = ui.MakeSelection<MathOperation>(opt =>
 			{
 				opt.Options = operations;
 				opt.OptionNames = operations.Select(o => o.Operation.Method.Name).ToList();
-				opt.Prompt = prompt;
+				opt.Prompt = "Select operation to perform on sequence: [" + numbers.PrintCollection() + "]\n";
 			});
 
 			var resultMessage = string.Empty;
