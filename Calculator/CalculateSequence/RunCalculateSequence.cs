@@ -95,7 +95,7 @@ public static class RunCalculateSequence
 			if (Activator.CreateInstance(calculatorType) is ICalculateSequence validCalculator)
 			{
 				calculatorInstances.Add(validCalculator);
-				calculatorNames.Add(validCalculator.GetType().Name);
+				calculatorNames.Add(calculatorType.Name);
 			}
 		}
 
