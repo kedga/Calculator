@@ -25,9 +25,9 @@ public class ConsoleLikeRpnCalculator(IUI ui) : StringRpnCalculator
 
             if (TryAddValue(input)) continue;
 
-            if (input.Equals("c", StringComparison.CurrentCultureIgnoreCase)) Clear();
+            if (input.Equals("c", StringComparison.InvariantCultureIgnoreCase)) Clear();
 
-            else if (input.Equals("q", StringComparison.CurrentCultureIgnoreCase)) break;
+            else if (input.Equals("q", StringComparison.InvariantCultureIgnoreCase)) break;
 
 			else if (TryGetOperator(input) is Operator validOperator)
 			{
