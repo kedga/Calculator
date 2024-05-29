@@ -14,8 +14,8 @@ public static class RunCalculateSequence
 			{
 				var (calculatorInstances, calculatorNames) = GetCalculators();
 				opt.Prompt = "Select calculator:";
-				opt.Options = [.. calculatorInstances];
-				opt.OptionNames = [.. calculatorNames];
+				opt.Options = calculatorInstances;
+				opt.OptionNames = calculatorNames;
 			});
 
 			var numbers = new List<double>();
