@@ -30,15 +30,15 @@ public static class RunCalculateSequence
 				ui.PushOutput($"'{breakCommand}' to select operation");
 				ui.PushOutput($"Numbers added: [{numbers.PrintCollection()}]");
 
-				var numberInput = ui.GetInput();
+				var userInput = ui.GetInput();
 
-				if (double.TryParse(numberInput, out var doubleValue))
+				if (double.TryParse(userInput, out var doubleValue))
 				{
 					numbers.Add(doubleValue);
 					continue;
 				}
 
-				else if (numberInput == breakCommand)
+				else if (userInput == breakCommand)
 				{
 					break;
 				}
