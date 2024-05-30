@@ -27,38 +27,7 @@ public class OperationUnit(List<Operand> operands, Operator @operator)
 	}
 	public double GetResult()
 	{
-		var operation = GetOperation();
-		return operation();
-	}
-
-	private Func<double> GetOperation() => Operator switch
-	{
-		var o when o == Operator.Add => PerformAddition,
-		var o when o == Operator.Subtract => PerformSubtraction,
-		var o when o == Operator.Divide => PerformDivision,
-		var o when o == Operator.Multiply => PerformMultiplication,
-		_ => throw new NotImplementedException("Operator not implemented in OperationUnit.GetOperation"),
-	};
-
-	private double PerformAddition()
-	{
-		return Operands.Select(o => o.Value).Sum();
-	}
-
-	public double PerformDivision()
-	{
-		var result = Operands.Select(o => o.Value).Aggregate((acc, number) => acc / number);
-		if (double.IsInfinity(result)) throw new DivideByZeroException("Cannot divide by zero");
-		return result;
-	}
-
-	public double PerformMultiplication()
-	{
-		return Operands.Select(o => o.Value).Aggregate((acc, number) => acc * number);
-	}
-
-	public double PerformSubtraction()
-	{
-		return Operands.Select(o => o.Value).Aggregate((acc, number) => acc - number);
+		var operation = Operator.GetOperation(Operator);
+		return operation(Operands);
 	}
 }

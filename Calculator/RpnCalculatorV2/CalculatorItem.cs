@@ -31,4 +31,35 @@ public record Operator(string Symbol, int RequiredOperands) : CalculatorItem
 	{
 		return Symbol;
 	}
+
+	public static Func<List<Operand>, double> GetOperation(Operator @operator) => @operator switch
+	{
+		var o when o == Add => PerformAddition,
+		var o when o == Subtract => PerformSubtraction,
+		var o when o == Divide => PerformDivision,
+		var o when o == Multiply => PerformMultiplication,
+		_ => throw new NotImplementedException("Operator not implemented in OperationUnit.GetOperation"),
+	};
+
+	private static double PerformAddition(List<Operand> operands)
+	{
+		return operands.Select(o => o.Value).Sum();
+	}
+
+	private static double PerformDivision(List<Operand> operands)
+	{
+		var result = operands.Select(o => o.Value).Aggregate((acc, number) => acc / number);
+		if (double.IsInfinity(result)) throw new DivideByZeroException("Cannot divide by zero");
+		return result;
+	}
+
+	private static double PerformMultiplication(List<Operand> operands)
+	{
+		return operands.Select(o => o.Value).Aggregate((acc, number) => acc * number);
+	}
+
+	private static double PerformSubtraction(List<Operand> operands)
+	{
+		return operands.Select(o => o.Value).Aggregate((acc, number) => acc - number);
+	}
 }
