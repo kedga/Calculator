@@ -63,12 +63,12 @@ public partial class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 			try
 			{
 				var (maybeOperationUnit, errorMessage) = OperationUnit.TryCreate(operationItems);
+
 				if (maybeOperationUnit is not OperationUnit validOperationUnit)
 				{
-					io.PushOutput(errorMessage);
+					io.PushOutput("Error: " + errorMessage);
 					return;
 				}
-
 				operationResult = validOperationUnit.GetResult();
 			}
 			catch (Exception ex)
