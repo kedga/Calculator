@@ -8,10 +8,10 @@ using Calculator.Calculate;
 namespace Calculator.Tests;
 
 using Xunit;
-public class CalculateWithRpnCalculatorTests() : CalculatorTests(new CalculateSequenceBasic()) { }
-public class CalculateBasicTests() : CalculatorTests(new CalculateSequenceBasic()) { }
+public class CalculateWithRpnCalculatorTests() : CalculatorTests(new SequenceCalculatorBasic()) { }
+public class CalculateBasicTests() : CalculatorTests(new SequenceCalculatorBasic()) { }
 
-public abstract class CalculatorTests(ICalculateSequence calculator)
+public abstract class CalculatorTests(ISequenceCalculator calculator)
 {
 	[Fact]
 	public void Add_AddsNumbersCorrectly()

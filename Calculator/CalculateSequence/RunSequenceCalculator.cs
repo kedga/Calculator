@@ -4,13 +4,13 @@ using System.Reflection;
 
 namespace Calculator.Calculate;
 
-public static class RunCalculateSequence
+public static class RunSequenceCalculator
 {
 	public static void Run(IUI ui)
 	{
 		while (true)
 		{
-			var calculator = ui.MakeSelection<ICalculateSequence>(opt =>
+			var calculator = ui.MakeSelection<ISequenceCalculator>(opt =>
 			{
 				var (calculatorInstances, calculatorNames) = GetCalculators();
 				opt.Prompt = "Select calculator:";
@@ -81,20 +81,20 @@ public static class RunCalculateSequence
 		}
 	}
 
-	private static (List<ICalculateSequence> instances, List<string> names) GetCalculators()
+	private static (List<ISequenceCalculator> instances, List<string> names) GetCalculators()
 	{
 		List<Type> calculatorTypes =
 			Assembly.GetExecutingAssembly()
 					.GetTypes()
-					.Where(t => typeof(ICalculateSequence).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+					.Where(t => typeof(ISequenceCalculator).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
 					.ToList();
 
-		var calculatorInstances = new List<ICalculateSequence>();
+		var calculatorInstances = new List<ISequenceCalculator>();
 		var calculatorNames = new List<string>();
 
 		foreach (var calculatorType in calculatorTypes)
 		{
-			if (Activator.CreateInstance(calculatorType) is ICalculateSequence validCalculator)
+			if (Activator.CreateInstance(calculatorType) is ISequenceCalculator validCalculator)
 			{
 				calculatorInstances.Add(validCalculator);
 				calculatorNames.Add(calculatorType.Name);

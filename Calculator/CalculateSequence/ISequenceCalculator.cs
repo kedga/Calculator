@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Calculator.Calculate;
 
-public interface ICalculateSequence
+public interface ISequenceCalculator
 {
     double Add(params double[] numbers);
     double Subtract(params double[] numbers);

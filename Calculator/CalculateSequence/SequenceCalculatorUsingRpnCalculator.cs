@@ -2,30 +2,30 @@
 
 namespace Calculator.Calculate;
 
-public class CalculateSequenceWithRpnCalculator : CalculateSequence
+public class SequenceCalculatorUsingRpnCalculator : SequenceCalculator
 {
     private readonly RpnCalculator _calculator = new();
-    public override double AddCustom(double[] numbers)
+    public override double AddLogic(double[] numbers)
     {
         AddNumbersAndOperate(numbers, Operator.Add);
 
         return _calculator.LastNumber;
     }
 
-    public override double SubtractCustom(double[] numbers)
+    public override double SubtractLogic(double[] numbers)
     {
         PerformPairwiseOperations(numbers, Operator.Subtract);
 
         return _calculator.LastNumber;
     }
 
-    public override double MultiplyCustom(double[] numbers)
+    public override double MultiplyLogic(double[] numbers)
     {
         AddNumbersAndOperate(numbers, Operator.Multiply);
 
         return _calculator.LastNumber;
     }
-    public override double DivideCustom(double[] numbers)
+    public override double DivideLogic(double[] numbers)
     {
         PerformPairwiseOperations(numbers, Operator.Divide);
 

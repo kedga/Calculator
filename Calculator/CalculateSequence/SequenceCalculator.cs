@@ -1,7 +1,7 @@
 ﻿
 namespace Calculator.Calculate;
 
-public abstract class CalculateSequence : ICalculateSequence
+public abstract class SequenceCalculator : ISequenceCalculator
 {
 	public double Add(params double[] numbers)
 	{
@@ -9,7 +9,7 @@ public abstract class CalculateSequence : ICalculateSequence
 
 		if (numbers.Length == 1) return numbers.First();
 
-		return AddCustom(numbers);
+		return AddLogic(numbers);
 	}
 
 	public double Divide(params double[] numbers)
@@ -18,7 +18,7 @@ public abstract class CalculateSequence : ICalculateSequence
 
 		if (numbers.Length == 1) return numbers.First();
 
-		var result = DivideCustom(numbers);
+		var result = DivideLogic(numbers);
 
 		if (double.IsInfinity(result)) throw new DivideByZeroException("Cannot divide by zero");
 
@@ -31,7 +31,7 @@ public abstract class CalculateSequence : ICalculateSequence
 
 		if (numbers.Length == 1) return numbers.First();
 
-		return MultiplyCustom(numbers);
+		return MultiplyLogic(numbers);
 	}
 
 	public double Subtract(params double[] numbers)
@@ -40,7 +40,7 @@ public abstract class CalculateSequence : ICalculateSequence
 
 		if (numbers.Length == 1) return numbers.First();
 
-		return SubtractCustom(numbers);
+		return SubtractLogic(numbers);
 	}
 
 	public List<MathOperation> GetOperations()
@@ -54,8 +54,8 @@ public abstract class CalculateSequence : ICalculateSequence
 		];
 	}
 
-	public abstract double AddCustom(double[] numbers);
-	public abstract double DivideCustom(double[] numbers);
-	public abstract double MultiplyCustom(double[] numbers);
-	public abstract double SubtractCustom(double[] numbers);
+	public abstract double AddLogic(double[] numbers);
+	public abstract double DivideLogic(double[] numbers);
+	public abstract double MultiplyLogic(double[] numbers);
+	public abstract double SubtractLogic(double[] numbers);
 }

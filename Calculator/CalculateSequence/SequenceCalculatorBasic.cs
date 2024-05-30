@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace Calculator.Calculate;
 
-public class CalculateSequenceBasic : CalculateSequence
+public class SequenceCalculatorBasic : SequenceCalculator
 {
-    public override double AddCustom(double[] numbers)
+    public override double AddLogic(double[] numbers)
     {
         return numbers.Sum();
     }
 
-    public override double DivideCustom(double[] numbers)
+    public override double DivideLogic(double[] numbers)
     {
         return numbers.Aggregate((acc, number) => acc / number);
     }
 
-    public override double MultiplyCustom(double[] numbers)
+    public override double MultiplyLogic(double[] numbers)
     {
         return numbers.Aggregate((acc, number) => acc * number);
     }
 
-    public override double SubtractCustom(double[] numbers)
+    public override double SubtractLogic(double[] numbers)
     {
         return numbers.Aggregate((acc, number) => acc - number);
     }

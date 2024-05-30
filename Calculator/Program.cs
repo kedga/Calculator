@@ -32,7 +32,7 @@ class Program
 
 		else if (rootOption == RootOption.SequenceCalc)
 		{
-			RunCalculateSequence.Run(ui);
+			RunSequenceCalculator.Run(ui);
 		}
 	}
 }
@@ -40,7 +40,7 @@ class Program
 public record RootOption(string Name)
 {
 	public static RootOption RpnCalc { get; } = new ("Reverse Polish notation calculator");
-	public static RootOption SequenceCalc { get; } = new ("Forward sequence calculator");
+	public static RootOption SequenceCalc { get; } = new ("Non-reverse sequence calculator");
 
 	public static List<RootOption> GetOptions() => [RpnCalc, SequenceCalc];
 }
