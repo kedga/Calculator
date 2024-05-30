@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Calculator.UI;
 
-
 public class ConsoleUI : IUI
 {
 	public void PushOutput(string text)

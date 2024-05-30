@@ -26,7 +26,7 @@ public static class RunCalculateSequence
 
 				ui.ClearOutput();
 				ui.PushOutput("Currently using " + calculator.GetType().Name);
-				ui.PushOutput("\nAdd numbers to sequence!");
+				ui.PushOutput("\nEnter number to add to sequence");
 				ui.PushOutput($"'{breakCommand}' to select operation");
 				ui.PushOutput($"Numbers added: [{numbers.PrintCollection()}]");
 
@@ -57,7 +57,9 @@ public static class RunCalculateSequence
 
 			try
 			{
-				resultMessage = numbers.PrintCollection($" {operation.Symbol} ") + " = " + operation.Operation([.. numbers]);
+				var result = operation.Operation([.. numbers]);
+
+				resultMessage = numbers.PrintCollection($" {operation.Symbol} ") + " = " + result;
 			}
 			catch (Exception ex)
 			{
