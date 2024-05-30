@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Calculator.UI;
 
-public interface IUI
+public interface ICanMakeSelectionUI : IBasicIO
 {
-	void PushOutput(string text);
-	string GetInput();
-	void ClearOutput();
 	T MakeSelection<T>(Action<MakeSelectionOptions<T>> configureOptions);
 	public bool AskYesOrNo(Action<AskYesOrNoOptions> configureOptions);
 }

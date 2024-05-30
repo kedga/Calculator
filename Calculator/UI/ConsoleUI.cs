@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator.UI;
 
-public class ConsoleUI : IUI
+public class ConsoleUI : ICanMakeSelectionUI
 {
 	public void PushOutput(string text)
 	{
@@ -18,7 +18,7 @@ public class ConsoleUI : IUI
 		return Console.ReadLine()?.Trim() ?? "";
 	}
 
-	public void ClearOutput()
+	public void Clear()
 	{
 		Console.Clear();
 	}

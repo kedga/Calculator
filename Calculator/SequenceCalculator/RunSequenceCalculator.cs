@@ -6,7 +6,7 @@ namespace Calculator.Calculate;
 
 public static class RunSequenceCalculator
 {
-	public static void Run(IUI ui)
+	public static void Run(ICanMakeSelectionUI ui)
 	{
 		while (true)
 		{
@@ -24,7 +24,7 @@ public static class RunSequenceCalculator
 			{
 				var breakCommand = "o";
 
-				ui.ClearOutput();
+				ui.Clear();
 				ui.PushOutput("Currently using " + calculator.GetType().Name);
 				ui.PushOutput("\nEnter number to add to sequence");
 				ui.PushOutput($"'{breakCommand}' to select operation");

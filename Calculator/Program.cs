@@ -1,5 +1,6 @@
 ﻿using Calculator.Calculate;
 using Calculator.Calculator;
+using Calculator.RpnCalculatorV2;
 using Calculator.UI;
 using Calculator.Utilities;
 
@@ -21,11 +22,18 @@ class Program
 			opt.Prompt = "Select one:";
 		});
 
-		ui.ClearOutput();
+		ui.Clear();
 
 		if (rootOption == RootOption.RpnCalc)
 		{
 			var calculator = new ConsoleLikeRpnCalculator(ui);
+
+			calculator.Run();
+		}
+
+		else if (rootOption == RootOption.RpnCalcV2)
+		{
+			var calculator = new ConsoleLikeRpnCalculatorV2(ui, new RpnCalcV2(ui));
 
 			calculator.Run();
 		}
@@ -40,7 +48,8 @@ class Program
 public record RootOption(string Name)
 {
 	public static RootOption RpnCalc { get; } = new ("Reverse Polish notation calculator");
+	public static RootOption RpnCalcV2 { get; } = new("Reverse Polish notation calculator V2");
 	public static RootOption SequenceCalc { get; } = new ("Non-reverse sequence calculator");
 
-	public static List<RootOption> GetOptions() => [RpnCalc, SequenceCalc];
+	public static List<RootOption> GetOptions() => [RpnCalcV2, RpnCalc, SequenceCalc];
 }
