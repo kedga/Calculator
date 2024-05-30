@@ -87,7 +87,7 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 			{
 				_io.PushOutput($"Step {i}: [ {workItems.PrintCollection(" ")} ]");
 			}
-			else if (workItems.Count == 1 && workItems.First() is Operand operand)
+			else if (workItems.First() is Operand operand)
 			{
 				_io.PushOutput($"Result: [ {operand.Value} ]");
 				return operand.Value;
