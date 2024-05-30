@@ -59,7 +59,6 @@ public partial class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 
 			var (leftItems, operationItems, rightItems) = ListUtilities.SplitList(workItems, operatorIndex, @operator.RequiredOperands);
 
-			OperationUnit operationUnit;
 			double operationResult;
 			try
 			{
@@ -70,8 +69,7 @@ public partial class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 					return;
 				}
 
-				operationUnit = validOperationUnit;
-				operationResult = operationUnit.GetResult();
+				operationResult = validOperationUnit.GetResult();
 			}
 			catch (Exception ex)
 			{
