@@ -7,6 +7,40 @@ public class RpnCalculator
 {
     private readonly Stack<double> _numberStack = [];
 	public string OutputMessage { get; set; } = string.Empty;
+	public int StackCount => _numberStack.Count;
+	public double LastNumber => _numberStack.Peek();
+
+	public void AddValue(double value)
+	{
+		_numberStack.Push(value);
+	}
+
+	public void Clear()
+	{
+		_numberStack.Clear();
+	}
+
+	public bool TryPerformOperation(Operator @operator)
+	{
+		OutputMessage = string.Empty;
+
+		var operationMethod = GetOperationMethod(@operator);
+		var isSuccess = operationMethod();
+
+		if (double.IsInfinity(LastNumber) || double.IsNaN(LastNumber))
+		{
+			OutputMessage = "Result is out of range for double type";
+			return false;
+		}
+
+		return isSuccess;
+	}
+
+	public string PrintStackContents() => ToString();
+	public override string ToString()
+	{
+		return $"[{_numberStack.Reverse().PrintCollection()}]";
+	}
 
 	private Func<bool> GetOperationMethod(Operator @operator) => @operator switch
     {
@@ -77,42 +111,6 @@ public class RpnCalculator
         }
         return true;
     }
-
-    public int StackCount => _numberStack.Count;
-    public double LastNumber => _numberStack.Peek();
-
-    public void AddValue(double value)
-    {
-        _numberStack.Push(value);
-	}
-
-    public void Clear()
-    {
-        _numberStack.Clear();
-    }
-
-    public bool TryPerformOperation(Operator @operator)
-    {
-        OutputMessage = string.Empty;
-
-		var operationMethod = GetOperationMethod(@operator);
-        var isSuccess = operationMethod();
-
-        if (double.IsInfinity(LastNumber) || double.IsNaN(LastNumber))
-        {
-            OutputMessage = "Result is out of range for double type";
-            return false;
-        }
-
-        return isSuccess;
-    }
-
-	public string PrintStackContents() => ToString();
-
-    public override string ToString()
-    {
-        return $"[{_numberStack.Reverse().PrintCollection()}]";
-	}
 }
 
 public enum Operator
