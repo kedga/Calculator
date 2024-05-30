@@ -5,7 +5,7 @@ namespace Calculator.RpnCalculatorV2;
 
 public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 {
-	private readonly IBasicIO _io = io;
+	protected readonly IBasicIO _io = io;
 	private readonly List<CalculatorItem> _items = [];
 	public int ItemCount => _items.Count;
 

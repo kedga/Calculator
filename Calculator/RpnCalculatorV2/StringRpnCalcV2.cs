@@ -9,7 +9,6 @@ namespace Calculator.RpnCalculatorV2;
 
 public class StringRpnCalcV2(IBasicIO io) : RpnCalcV2(io)
 {
-	private readonly IBasicIO _io = io;
 	public bool TryAddItem(string input)
 	{
 		if (double.TryParse(input, out var doubleValue))
