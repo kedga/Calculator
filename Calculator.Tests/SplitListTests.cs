@@ -23,7 +23,7 @@ public class SplitListTests
 		int leftOffset = 2;
 
 		// Act
-		var (leftItems, middleItems, rightItems) = ListUtilities.SplitList(items, index, leftOffset);
+		var (leftItems, middleItems, rightItems) = SplitList(items, index, leftOffset);
 
 		// Assert
 		Assert.Equal(0, leftItems.First());
@@ -48,7 +48,7 @@ public class SplitListTests
 		int leftOffset = 0;
 
 		// Act
-		var (leftItems, middleItems, rightItems) = ListUtilities.SplitList(items, index, leftOffset);
+		var (leftItems, middleItems, rightItems) = SplitList(items, index, leftOffset);
 
 		// Assert
 		Assert.Equal(0, leftItems.First());
@@ -72,7 +72,7 @@ public class SplitListTests
 		int leftOffset = 0;
 
 		// Act
-		var (leftItems, middleItems, rightItems) = ListUtilities.SplitList(items, index, leftOffset);
+		var (leftItems, middleItems, rightItems) = SplitList(items, index, leftOffset);
 
 		// Assert
 		Assert.Empty(leftItems);
@@ -95,7 +95,7 @@ public class SplitListTests
 		int leftOffset = 3;
 
 		// Act & Assert
-		Assert.Throws<Exception>(() => ListUtilities.SplitList(items, index, leftOffset));
+		Assert.Throws<Exception>(() => SplitList(items, index, leftOffset));
 
 	}
 	[Fact]
@@ -110,7 +110,7 @@ public class SplitListTests
 		int leftOffset = 1;
 
 		// Act
-		var (leftItems, middleItems, rightItems) = ListUtilities.SplitList(items, index, leftOffset);
+		var (leftItems, middleItems, rightItems) = SplitList(items, index, leftOffset);
 
 		// Assert
 		Assert.Equal(0, leftItems.First());
@@ -133,6 +133,6 @@ public class SplitListTests
 		int leftOffset = -2;
 
 		// Act & Assert
-		Assert.Throws<Exception>(() => ListUtilities.SplitList(items, index, leftOffset));
+		Assert.Throws<Exception>(() => SplitList(items, index, leftOffset));
 	}
 }

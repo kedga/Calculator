@@ -33,7 +33,7 @@ class Program
 
 		else if (rootOption == RootOption.RpnCalcV2)
 		{
-			var calculator = new ConsoleLikeRpnCalculatorV2(ui, new RpnCalcV2(ui));
+			var calculator = new ConsoleLikeRpnCalculatorV2(ui);
 
 			calculator.Run();
 		}

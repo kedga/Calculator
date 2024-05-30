@@ -3,27 +3,36 @@ using Calculator.Utilities;
 
 namespace Calculator.RpnCalculatorV2;
 
-public partial class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
+public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 {
+	private readonly IBasicIO _io = io;
 	private readonly List<CalculatorItem> _items = [];
 	public int ItemCount => _items.Count;
-	
-	public bool TryAddItem(string input)
+
+	public void AddOperand(double value)
 	{
-		if (double.TryParse(input, out var doubleValue))
+		_items.Add(new Operand(value));
+		_io.PushOutput($"Added number: {value}");
+	}
+
+	public void AddOperator(Operator @operator)
+	{
+		_items.Add(@operator);
+		_io.PushOutput($"Added operator: {@operator}");
+	}
+
+	public void RemoveLastItem()
+	{
+		if ( _items.Count > 0 )
 		{
-			_items.Add(new Operand(doubleValue));
-			io.PushOutput("Added number: " + input);
-			return true;
+			var lastItem = _items.Last();
+			_items.RemoveAt(_items.Count - 1);
+			_io.PushOutput("Removed: " + lastItem);
 		}
-		else if (Operator.TryGetOperator(input) is Operator @operator)
+		else
 		{
-			_items.Add(@operator);
-			io.PushOutput("Added operator: " + input);
-			return true;
+			_io.PushOutput("Cannot remove item, sequence is already empty");
 		}
-		io.PushOutput("Unknown input: " + input);
-		return false;
 	}
 
 	public void Clear()
@@ -31,33 +40,27 @@ public partial class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 		_items.Clear();
 	}
 
-	private static Operator GetFirstOperator(List<CalculatorItem> items)
+	public double? TryPerformOperation()
 	{
-		return (Operator)items.First(i => i is Operator);
-	}
-
-	public void TryPerformOperation()
-	{
-		io.PushOutput("Performing calculation!");
+		_io.PushOutput("Performing calculation!");
+		_io.PushOutput($"Items:  [ {_items.PrintCollection(" ")} ]");
 
 		var workItems = _items;
-		int i = 0;
+		int i = 1;
 
 		while (workItems.Any(i => i is Operator))
 		{
-			io.PushOutput($"step {i}: [ {workItems.PrintCollection(" ")} ]");
-
 			var @operator = GetFirstOperator(workItems);
 
 			var operatorIndex = workItems.IndexOf(@operator);
 
 			if (operatorIndex < @operator.RequiredOperands)
 			{
-				io.PushOutput("Error: Not enough operands");
-				return;
+				_io.PushOutput("Error: Not enough operands");
+				return null;
 			}
 
-			var (leftItems, operationItems, rightItems) = ListUtilities.SplitList(workItems, operatorIndex, @operator.RequiredOperands);
+			var (leftItems, operationItems, rightItems) = SplitList(workItems, operatorIndex, @operator.RequiredOperands);
 
 			double operationResult;
 			try
@@ -66,37 +69,64 @@ public partial class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 
 				if (maybeOperationUnit is not OperationUnit validOperationUnit)
 				{
-					io.PushOutput("Error: " + errorMessage);
-					return;
+					_io.PushOutput("Error: " + errorMessage);
+					return null;
 				}
 				operationResult = validOperationUnit.GetResult();
 			}
 			catch (Exception ex)
 			{
-				io.PushOutput("Error: " + ex.Message);
-				return;
+				_io.PushOutput("Error: " + ex.Message);
+				return null;
 			}
 
 			var newOperand = new Operand(operationResult);
 			workItems = [.. leftItems, newOperand, .. rightItems];
 
+			if (workItems.Count > 1)
+			{
+				_io.PushOutput($"Step {i}: [ {workItems.PrintCollection(" ")} ]");
+			}
+			else if (workItems.Count == 1 && workItems.First() is Operand operand)
+			{
+				_io.PushOutput($"Result: [ {operand.Value} ]");
+				return operand.Value;
+			}
+
 			i++;
 		}
 
-		if (workItems.Count == 1 && workItems.First() is Operand operand)
-		{
-			io.PushOutput($"step {i}: [ {operand.Value} ]");
-			io.PushOutput("Result: " + operand.Value);
-		}
-		else
-		{
-			io.PushOutput("Error: Not enough operators");
-		}
+		_io.PushOutput("Error: Not enough operators");
+		return null;
 	}
 
 	public string PrintStackContents() => ToString();
+
 	public override string ToString()
 	{
 		return $"[ {_items.PrintCollection(" ")} ]";
+	}
+
+	private static Operator GetFirstOperator(List<CalculatorItem> items)
+	{
+		return (Operator)items.First(i => i is Operator);
+	}
+
+	public static (List<T> leftItems, List<T> middleItems, List<T> rightItems) SplitList<T>(List<T> items, int index, int leftOffset)
+	{
+		if (index < leftOffset)
+		{
+			throw new Exception("leftOffset larger than index");
+		}
+		if (leftOffset < 0)
+		{
+			throw new Exception("leftOffset cannot be negative");
+		}
+
+		var leftItems = items[..(index - leftOffset)];
+		var middleItems = items[(index - leftOffset)..(index + 1)];
+		var rightItems = items[(index + 1)..];
+
+		return (leftItems, middleItems, rightItems);
 	}
 }

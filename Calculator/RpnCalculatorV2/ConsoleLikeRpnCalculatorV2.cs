@@ -3,22 +3,24 @@ using Calculator.UI;
 
 namespace Calculator.RpnCalculatorV2;
 
-public class ConsoleLikeRpnCalculatorV2(IBasicIO io, IRpnCalculatorV2 calculator)
+public class ConsoleLikeRpnCalculatorV2(IBasicIO io)
 {
-	protected readonly IRpnCalculatorV2 _calculator = calculator;
+	protected readonly StringRpnCalcV2 _calculator = new(io);
 	public void Run()
     {
         const string performOperationCmd = "p";
 		const string clearIoCmd = "c";
 		const string quitCmd = "q";
+		const string removeItemCmd = "r";
 
-		const string basePrompt =
-@$"Commands
+		const string basePrompt = @$"
+Commands:
 
 number  : Add a number
 + - / * : Add an operator
 {quitCmd}       : Quit
 {clearIoCmd}       : Clear numbers
+{removeItemCmd}       : Remove last item from sequence
 {performOperationCmd}       : Perform calculation
 ";
 
@@ -39,7 +41,9 @@ number  : Add a number
 
             else if (input.Equals(clearIoCmd)) _calculator.Clear();
 
-            else if (input.Equals(quitCmd)) break;
+			else if (input.Equals(removeItemCmd)) _calculator.RemoveLastItem();
+
+			else if (input.Equals(quitCmd)) break;
 
             else _calculator.TryAddItem(input);
         }

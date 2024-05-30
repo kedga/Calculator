@@ -31,9 +31,4 @@ public record Operator(string Symbol, int RequiredOperands) : CalculatorItem
 	{
 		return Symbol;
 	}
-
-	//public override bool Equals(object? obj)
-	//{
-	//	return obj is Operator other && Symbol == other.Symbol;
-	//}
 }
