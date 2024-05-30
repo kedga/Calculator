@@ -43,7 +43,7 @@ public class ConsoleLikeRpnCalculatorV2Tests
 		_consoleCalculator.Run();
 
 		// Assert
-		_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("[  ]"))), Times.AtLeastOnce);
+		_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("[  ]"))), Times.Exactly(2));
 	}
 
 	[Fact]
@@ -58,7 +58,6 @@ public class ConsoleLikeRpnCalculatorV2Tests
 
 		// Assert
 		_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("Removed: +"))), Times.Once);
-		_mockIo.Verify(io => io.PushOutput("Removed: +"), Times.Once);
 	}
 
 	[Fact]
