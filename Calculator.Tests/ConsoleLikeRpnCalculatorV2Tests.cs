@@ -15,7 +15,7 @@ public class ConsoleLikeRpnCalculatorV2Tests
 	public ConsoleLikeRpnCalculatorV2Tests()
 	{
 		_mockIo = new Mock<IBasicIO>();
-		_consoleCalculator = new ConsoleLikeRpnCalculatorV2(_mockIo.Object);
+		_consoleCalculator = new ConsoleLikeRpnCalculatorV2(new RpnCalcV2(_mockIo.Object),_mockIo.Object);
 	}
 
 	[Fact]

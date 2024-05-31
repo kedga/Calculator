@@ -3,22 +3,22 @@ using Calculator.Utilities;
 
 namespace Calculator.RpnCalculatorV2;
 
-public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
+public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 {
-	protected readonly IBasicIO _io = io;
+	protected readonly IBasicIO? _io = io;
 	private readonly List<CalculatorItem> _items = [];
 	public int ItemCount => _items.Count;
 
 	public void AddOperand(double value)
 	{
 		_items.Add(new Operand(value));
-		_io.PushOutput($"Added number: {value}");
+		_io?.PushOutput($"Added number: {value}");
 	}
 
 	public void AddOperator(Operator @operator)
 	{
 		_items.Add(@operator);
-		_io.PushOutput($"Added operator: {@operator}");
+		_io?.PushOutput($"Added operator: {@operator}");
 	}
 
 	public void RemoveLastItem()
@@ -27,24 +27,24 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 		{
 			var lastItem = _items.Last();
 			_items.RemoveAt(_items.Count - 1);
-			_io.PushOutput("Removed: " + lastItem);
+			_io?.PushOutput("Removed: " + lastItem);
 		}
 		else
 		{
-			_io.PushOutput("Cannot remove item, sequence is already empty");
+			_io?.PushOutput("Cannot remove item, sequence is already empty");
 		}
 	}
 
 	public void Clear()
 	{
 		_items.Clear();
-		_io.PushOutput("Cleared all items");
+		_io?.PushOutput("Cleared all items");
 	}
 
 	public double? TryPerformOperation()
 	{
-		_io.PushOutput("Performing calculation!");
-		_io.PushOutput($"Items:  [ {_items.PrintCollection(" ")} ]");
+		_io?.PushOutput("Performing calculation!");
+		_io?.PushOutput($"Items:  [ {_items.PrintCollection(" ")} ]");
 
 		var workItems = _items.ToList();
 		var stepCount = 1;
@@ -57,7 +57,7 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 
 			if (operatorIndex < @operator.RequiredOperands)
 			{
-				_io.PushOutput("Error: Not enough operands");
+				_io?.PushOutput("Error: Not enough operands");
 				return null;
 			}
 
@@ -70,14 +70,14 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 
 				if (maybeOperationUnit is not OperationUnit validOperationUnit)
 				{
-					_io.PushOutput("Error: " + errorMessage);
+					_io?.PushOutput("Error: " + errorMessage);
 					return null;
 				}
 				operationResult = validOperationUnit.GetResult();
 			}
 			catch (Exception ex)
 			{
-				_io.PushOutput("Error: " + ex.Message);
+				_io?.PushOutput("Error: " + ex.Message);
 				return null;
 			}
 
@@ -86,18 +86,18 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 
 			if (workItems.Count > 1)
 			{
-				_io.PushOutput($"Step {stepCount}: [ {workItems.PrintCollection(" ")} ]");
+				_io?.PushOutput($"Step {stepCount}: [ {workItems.PrintCollection(" ")} ]");
 			}
 			else if (workItems.First() is Operand operand)
 			{
-				_io.PushOutput($"Result: [ {operand.Value} ]");
+				_io?.PushOutput($"Result: [ {operand.Value} ]");
 				return operand.Value;
 			}
 
 			stepCount++;
 		}
 
-		_io.PushOutput("Error: Not enough operators");
+		_io?.PushOutput("Error: Not enough operators");
 		return null;
 	}
 

@@ -2,7 +2,7 @@
 
 namespace Calculator.Calculator;
 
-public class StringRpnCalculator : RpnCalculator, IRpnCalculator<string, string>
+public class StringRpnCalculator : RpnCalculator
 {
     public bool TryAddValue(string value)
     {

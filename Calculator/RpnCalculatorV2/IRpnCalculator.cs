@@ -1,6 +1,6 @@
 ﻿namespace Calculator.RpnCalculatorV2;
 
-public interface IRpnCalculatorV2
+public interface IRpnCalculator
 {
 	int ItemCount { get; }
 	void Clear();

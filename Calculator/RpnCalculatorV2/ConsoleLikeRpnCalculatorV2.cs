@@ -3,9 +3,11 @@ using Calculator.UI;
 
 namespace Calculator.RpnCalculatorV2;
 
-public class ConsoleLikeRpnCalculatorV2(IBasicIO io)
+public class ConsoleLikeRpnCalculatorV2(IRpnCalculator calculator, IBasicIO io)
 {
-	protected readonly StringRpnCalcV2 _calculator = new(io);
+	protected readonly IRpnCalculator _calculator = calculator;
+	private readonly RpnCalcStringParser _parser = new(io);
+
 	public void Run()
     {
         const string performOperationCmd = "p";
@@ -35,17 +37,13 @@ number  : Add a number
 
             string input = io.GetInput().ToLower();
 
-            if (input.Length < 1) continue;
+			if (string.IsNullOrWhiteSpace(input)) continue;
 
-            else if (input.Equals(performOperationCmd)) _calculator.TryPerformOperation();
-
-            else if (input.Equals(clearIoCmd)) _calculator.Clear();
-
+			if (input.Equals(performOperationCmd)) _calculator.TryPerformOperation();
+			else if (input.Equals(clearIoCmd)) _calculator.Clear();
 			else if (input.Equals(removeItemCmd)) _calculator.RemoveLastItem();
-
 			else if (input.Equals(quitCmd)) break;
-
-            else _calculator.TryAddItem(input);
-        }
-    }
+			else _parser.TryAddItem(input, _calculator);
+		}
+	}
 }

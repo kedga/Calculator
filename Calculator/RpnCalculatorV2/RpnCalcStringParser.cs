@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace Calculator.RpnCalculatorV2;
 
-public class StringRpnCalcV2(IBasicIO io) : RpnCalcV2(io)
+public class RpnCalcStringParser(IBasicIO? io = null)
 {
-	public bool TryAddItem(string input)
+	public bool TryAddItem(string input, IRpnCalculator calculator)
 	{
 		if (double.TryParse(input, out var doubleValue))
 		{
-			AddOperand(doubleValue);
+			calculator.AddOperand(doubleValue);
 			return true;
 		}
 		else if (Operator.TryGetOperator(input) is Operator @operator)
 		{
-			AddOperator(@operator);
+			calculator.AddOperator(@operator);
 			return true;
 		}
-		_io.PushOutput("Unknown input: " + input);
+		io?.PushOutput("Unknown input: " + input);
 		return false;
 	}
 }
