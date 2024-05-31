@@ -11,6 +11,6 @@ public static class CollectionToString
 {
     public static string PrintCollection<T>(this IEnumerable<T> collection, string separator = ", ")
     {
-        return $"{string.Join(separator, collection.Select(n => n?.ToString()))}";
-    }
+		return $"{string.Join(separator, collection)}";
+	}
 }
