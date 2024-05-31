@@ -2,11 +2,16 @@
 
 namespace Calculator.RpnCalculatorV2;
 
-public class OperationUnit(List<Operand> operands, Operator @operator)
+public class OperationUnit
 {
-	public List<Operand> Operands { get; set; } = operands;
-	public Operator Operator { get; set; } = @operator;
-	public static (OperationUnit? maybeOperationUnit, string errorMessage) TryCreate(List<CalculatorItem> items)
+	public List<Operand> Operands { get; set; }
+	public Operator Operator { get; set; }
+    private OperationUnit(List<Operand> operands, Operator @operator)
+    {
+		Operands = operands;
+		Operator = @operator;
+	}
+    public static (OperationUnit? maybeOperationUnit, string errorMessage) TryCreate(List<CalculatorItem> items)
 	{
 		if (items.Count < 1)
 		{
