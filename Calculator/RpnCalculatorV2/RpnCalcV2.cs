@@ -46,7 +46,7 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 		_io.PushOutput($"Items:  [ {_items.PrintCollection(" ")} ]");
 
 		var workItems = _items.ToList();
-		int i = 1;
+		var i = 1;
 
 		while (workItems.Any(i => i is Operator))
 		{
