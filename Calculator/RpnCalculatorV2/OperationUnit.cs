@@ -32,7 +32,8 @@ public class OperationUnit
 	}
 	public double GetResult()
 	{
-		var operation = Operator.GetOperation(Operator);
+		//var operation = Operator.GetOperation(Operator);
+		var operation = Operator.Operation;
 		return operation(Operands);
 	}
 }

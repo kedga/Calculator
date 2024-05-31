@@ -13,7 +13,7 @@ public class StringRpnCalculatorTests
 
 		// Act
 		calculator.AddValue(5.0);
-
+		
 		// Assert
 		Assert.Equal(1, calculator.StackCount);
 		Assert.Equal(5.0, calculator.LastNumber);

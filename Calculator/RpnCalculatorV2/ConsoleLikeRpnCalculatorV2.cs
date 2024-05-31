@@ -18,12 +18,12 @@ public class ConsoleLikeRpnCalculatorV2(IRpnCalculator calculator, IBasicIO io)
 		const string basePrompt = @$"
 Commands:
 
-number  : Add a number
-+ - / * : Add an operator
-{quitCmd}       : Quit
-{clearIoCmd}       : Clear numbers
-{removeItemCmd}       : Remove last item from sequence
-{performOperationCmd}       : Perform calculation
+number          : Add a number
++ - / * exp sin : Add an operator
+{quitCmd}               : Quit
+{clearIoCmd}               : Clear numbers
+{removeItemCmd}               : Remove last item from sequence
+{performOperationCmd}               : Perform calculation
 ";
 
 		while (true)

@@ -23,7 +23,7 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 
 	public void RemoveLastItem()
 	{
-		if (_items.Count > 0)
+		if (_items.Count > 0) // TODO: Make more performant
 		{
 			var lastItem = _items.Last();
 			_items.RemoveAt(_items.Count - 1);
