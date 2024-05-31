@@ -3,9 +3,9 @@ using Calculator.UI;
 
 namespace Calculator.Calculator;
 
-public class ConsoleLikeRpnCalculator(ICanMakeSelectionUI ui) : StringRpnCalculator
+public class ConsoleLikeRpnCalculator(IBasicIO ui) : StringRpnCalculator
 {
-	protected readonly ICanMakeSelectionUI _ui = ui;
+	protected readonly IBasicIO _ui = ui;
 	public void Run()
     {
         while (true)
