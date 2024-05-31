@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator.UI;
 
-public class ConsoleUI : ICanMakeSelectionUI
+public class ConsoleUI : ICanMakeSelectionIO
 {
 	public void PushOutput(string text)
 	{

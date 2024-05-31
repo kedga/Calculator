@@ -6,7 +6,7 @@ namespace Calculator.Calculate;
 
 public static class RunSequenceCalculator
 {
-	public static void Run(ICanMakeSelectionUI ui)
+	public static void Run(ICanMakeSelectionIO ui)
 	{
 		while (true)
 		{

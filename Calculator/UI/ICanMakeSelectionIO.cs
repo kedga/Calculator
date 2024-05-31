@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator.UI;
 
-public interface ICanMakeSelectionUI : IBasicIO
+public interface ICanMakeSelectionIO : IBasicIO
 {
 	T MakeSelection<T>(Action<MakeSelectionOptions<T>> configureOptions);
 	public bool AskYesOrNo(Action<AskYesOrNoOptions> configureOptions);
