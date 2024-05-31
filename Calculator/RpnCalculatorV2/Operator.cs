@@ -15,8 +15,7 @@ public record Operator(string Symbol, int RequiredOperands, Func<List<Operand>, 
 		typeof(Operator)
 			.GetProperties(BindingFlags.Static | BindingFlags.Public)
 			.Where(p => p.PropertyType == typeof(Operator))
-			.Select(p => p.GetValue(null) as Operator)
-			.Where(op => op != null)
+			.Select(p => p.GetValue(null))
 			.Cast<Operator>()
 			.ToList();
 
