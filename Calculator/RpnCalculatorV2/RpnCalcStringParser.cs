@@ -16,7 +16,7 @@ public class RpnCalcStringParser(IBasicIO? io = null)
 			calculator.AddOperand(doubleValue);
 			return true;
 		}
-		else if (Operator.TryGetOperator(input) is Operator @operator)
+		else if (TryGetOperator(input) is Operator @operator)
 		{
 			calculator.AddOperator(@operator);
 			return true;
@@ -24,4 +24,7 @@ public class RpnCalcStringParser(IBasicIO? io = null)
 		io?.PushOutput("Unknown input: " + input);
 		return false;
 	}
+
+	private static Operator? TryGetOperator(string symbol) =>
+		Operator.GetAllOperators().FirstOrDefault(s => s.Symbol == symbol);
 }

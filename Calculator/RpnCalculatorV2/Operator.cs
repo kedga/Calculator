@@ -11,16 +11,13 @@ public record Operator(string Symbol, int RequiredOperands, Func<List<Operand>, 
 	public static Operator Exponential { get; } = new("exp", 2, PerformExponential);
 	public static Operator Sine { get; } = new("sin", 1, PerformSine);
 
-	private static List<Operator> GetAllOperators() =>
+	public static List<Operator> GetAllOperators() =>
 		typeof(Operator)
 			.GetProperties(BindingFlags.Static | BindingFlags.Public)
 			.Where(p => p.PropertyType == typeof(Operator))
 			.Select(p => p.GetValue(null))
 			.Cast<Operator>()
 			.ToList();
-
-	public static Operator? TryGetOperator(string symbol) =>
-		GetAllOperators().FirstOrDefault(s => s.Symbol == symbol);
 
 	public override string ToString()
 	{
