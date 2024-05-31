@@ -38,6 +38,7 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 	public void Clear()
 	{
 		_items.Clear();
+		_io.PushOutput("Cleared all items");
 	}
 
 	public double? TryPerformOperation()
@@ -46,7 +47,7 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 		_io.PushOutput($"Items:  [ {_items.PrintCollection(" ")} ]");
 
 		var workItems = _items.ToList();
-		var i = 1;
+		var stepCount = 1;
 
 		while (workItems.Any(i => i is Operator))
 		{
@@ -85,7 +86,7 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 
 			if (workItems.Count > 1)
 			{
-				_io.PushOutput($"Step {i}: [ {workItems.PrintCollection(" ")} ]");
+				_io.PushOutput($"Step {stepCount}: [ {workItems.PrintCollection(" ")} ]");
 			}
 			else if (workItems.First() is Operand operand)
 			{
@@ -93,7 +94,7 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 				return operand.Value;
 			}
 
-			i++;
+			stepCount++;
 		}
 
 		_io.PushOutput("Error: Not enough operators");
@@ -109,18 +110,18 @@ public class RpnCalcV2(IBasicIO io) : IRpnCalculatorV2
 
 	private static Operator GetFirstOperator(List<CalculatorItem> items)
 	{
-		return (Operator)items.First(i => i is Operator);
+		return items.OfType<Operator>().First();
 	}
 
 	public static (List<T> leftItems, List<T> middleItems, List<T> rightItems) SplitList<T>(List<T> items, int index, int leftOffset)
 	{
 		if (index < leftOffset)
 		{
-			throw new Exception("leftOffset larger than index");
+			throw new ArgumentOutOfRangeException(nameof(leftOffset), "leftOffset larger than index");
 		}
 		if (leftOffset < 0)
 		{
-			throw new Exception("leftOffset cannot be negative");
+			throw new ArgumentOutOfRangeException(nameof(leftOffset), "leftOffset cannot be negative");
 		}
 
 		var leftItems = items[..(index - leftOffset)];

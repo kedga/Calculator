@@ -95,8 +95,7 @@ public class SplitListTests
 		int leftOffset = 3;
 
 		// Act & Assert
-		Assert.Throws<Exception>(() => SplitList(items, index, leftOffset));
-
+		Assert.Throws<ArgumentOutOfRangeException>(() => SplitList(items, index, leftOffset));
 	}
 	[Fact]
 	public void SplitList_IndexAtEnd_SplitsCorrectly()
@@ -133,6 +132,6 @@ public class SplitListTests
 		int leftOffset = -2;
 
 		// Act & Assert
-		Assert.Throws<Exception>(() => SplitList(items, index, leftOffset));
+		Assert.Throws<ArgumentOutOfRangeException>(() => SplitList(items, index, leftOffset));
 	}
 }
