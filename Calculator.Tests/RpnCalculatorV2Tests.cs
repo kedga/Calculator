@@ -84,13 +84,13 @@ namespace Calculator.Tests
 			_calculator.AddOperator(operator3);
 			_calculator.AddOperator(operator4);
 
-			var result1 = OperationUnit.TryCreateAndGetResult([operand1, operand2, operator1]);
+			var result1 = OperationUnit.TryCreateAndGetResultingOperand([operand1, operand2, operator1]);
 
-			var result2 = OperationUnit.TryCreateAndGetResult([result1!, operand3, operator2]);
+			var result2 = OperationUnit.TryCreateAndGetResultingOperand([result1!, operand3, operator2]);
 
-			var result3 = OperationUnit.TryCreateAndGetResult([operand4, operand5, operator3]);
+			var result3 = OperationUnit.TryCreateAndGetResultingOperand([operand4, operand5, operator3]);
 
-			var result4 = OperationUnit.TryCreateAndGetResult([result2!, result3!, operator4]);
+			var result4 = OperationUnit.TryCreateAndGetResultingOperand([result2!, result3!, operator4]);
 
 			var sequence0 = new List<CalculatorItem>() { operand1, operand2, operator1, operand3, operator2, operand4, operand5, operator3, operator4 };
 
