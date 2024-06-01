@@ -29,7 +29,7 @@ public class ConsoleLikeRpnCalculatorV2Tests
 		_consoleCalculator.Run();
 
 		// Assert
-		_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("[ 9 ]"))), Times.Once);
+		_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.FinalStep(new List<CalculatorItem>() { new Operand(9) }, 4)), Times.Once);
 	}
 
 	[Fact]
@@ -43,7 +43,7 @@ public class ConsoleLikeRpnCalculatorV2Tests
 		_consoleCalculator.Run();
 
 		// Assert
-		_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("[  ]"))), Times.Exactly(2));
+		_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.PrintItems(new List<CalculatorItem>() { })), Times.Exactly(2));
 	}
 
 	[Fact]
@@ -57,7 +57,7 @@ public class ConsoleLikeRpnCalculatorV2Tests
 		_consoleCalculator.Run();
 
 		// Assert
-		_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("Removed: +"))), Times.Once);
+		_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.RemovedItem(Operator.Add)), Times.Once);
 	}
 
 	[Fact]

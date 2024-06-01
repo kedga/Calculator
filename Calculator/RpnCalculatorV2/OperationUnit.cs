@@ -34,11 +34,27 @@ public class OperationUnit
 
 		return (new OperationUnit(operands, @operator), ErrorMessage.TryCreate.Success);
 	}
+
+	public static Operand? TryCreateAndGetResult(List<CalculatorItem> items)
+	{
+		try
+		{
+			var opUnit = new OperationUnit(items[..^1].Cast<Operand>().ToList(), (Operator)items[^1]);
+			var result = opUnit.GetResult();
+			return new Operand(result);
+		}
+		catch (Exception)
+		{
+			return null;
+		}
+	}
+
 	public double GetResult()
 	{
 		var operation = Operator.Operation;
 		return operation(Operands);
 	}
+
 	public static class ErrorMessage
 	{
 		public static class TryCreate
