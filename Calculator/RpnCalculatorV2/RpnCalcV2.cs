@@ -80,17 +80,17 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 
 		while (workItems.Any(i => i is Operator))
 		{
-			var @operator = GetFirstOperator(workItems);
+			var firstOperator = workItems.OfType<Operator>().First();
 
-			var operatorIndex = workItems.IndexOf(@operator);
+			var firstOperatorIndex = workItems.IndexOf(firstOperator);
 
-			if (operatorIndex < @operator.RequiredOperands)
+			if (firstOperatorIndex < firstOperator.RequiredOperands)
 			{
 				_io?.PushOutput(Message.TryPerformOperation.NotEnoughOperands);
 				return null;
 			}
 
-			var (leftItems, operationItems, rightItems) = SplitList(workItems, operatorIndex, @operator.RequiredOperands);
+			var (leftItems, operationItems, rightItems) = SplitList(workItems, firstOperatorIndex, firstOperator.RequiredOperands);
 
 			var	operationResult = OperationUnit.CreateAndGetResultingOperand(operationItems);
 
@@ -118,11 +118,6 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 	public override string ToString()
 	{
 		return Message.PrintItems(_items);
-	}
-
-	private static Operator GetFirstOperator(List<CalculatorItem> items)
-	{
-		return items.OfType<Operator>().First();
 	}
 
 	public static (List<T> leftItems, List<T> middleItems, List<T> rightItems) SplitList<T>(List<T> items, int index, int leftOffset)
