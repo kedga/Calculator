@@ -51,7 +51,7 @@ public class OperationUnitTests
 		var (operationUnit, errorMessage) = OperationUnit.TryCreate(items);
 
 		Assert.NotNull(operationUnit);
-		Assert.Equal("Success", errorMessage);
+		Assert.Equal(OperationUnit.ErrorMessage.TryCreate.Success, errorMessage);
 		Assert.Equal(2, operationUnit.Operands[0].Value);
 		Assert.Equal(3, operationUnit.Operands[1].Value);
 		Assert.Equal(Operator.Add, operationUnit.Operator);
