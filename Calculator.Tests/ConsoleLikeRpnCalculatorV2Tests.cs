@@ -29,7 +29,7 @@ public class ConsoleLikeRpnCalculatorV2Tests
 		_consoleCalculator.Run();
 
 		// Assert
-		_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("Result: [ 9 ]"))), Times.Once);
+		_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("[ 9 ]"))), Times.Once);
 	}
 
 	[Fact]

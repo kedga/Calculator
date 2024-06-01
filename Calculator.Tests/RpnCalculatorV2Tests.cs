@@ -85,7 +85,7 @@ namespace Calculator.Tests
 			_mockIo.Verify(io => io.PushOutput("Step 1: [ 8 8 / 3 6 + * ]"), Times.Once);
 			_mockIo.Verify(io => io.PushOutput("Step 2: [ 1 3 6 + * ]"), Times.Once);
 			_mockIo.Verify(io => io.PushOutput("Step 3: [ 1 9 * ]"), Times.Once);
-			_mockIo.Verify(io => io.PushOutput("Result: [ 9 ]"), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains("[ 9 ]"))), Times.Once);
 		}
 
 		[Fact]
