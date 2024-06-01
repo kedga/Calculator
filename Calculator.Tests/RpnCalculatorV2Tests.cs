@@ -61,7 +61,7 @@ namespace Calculator.Tests
 		}
 
 		[Fact]
-		public void TryPerformOperation_WithValidInput_ReturnsExpectedResult()
+		public void TryPerformOperation_WithValidInput_OutputsCorrectSequence()
 		{
 			// Arrange
 			var operand1 = new Operand(3);
