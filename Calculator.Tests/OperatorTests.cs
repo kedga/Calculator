@@ -27,6 +27,13 @@ public class OperatorTests
 		double result = Operator.Multiply.Operation(operands);
 		Assert.Equal(6, result);
 	}
+	[Fact]
+	public void MultiplyOperator_SingleOperand_ReturnsSameOperand()
+	{
+		var operands = new List<Operand> { new(2) };
+		double result = Operator.Multiply.Operation(operands);
+		Assert.Equal(2, result);
+	}
 
 	[Fact]
 	public void DivideOperator_ShouldDivideOperands()
