@@ -35,7 +35,7 @@ public class OperationUnit
 		return (new OperationUnit(operands, @operator), ErrorMessage.TryCreate.Success);
 	}
 
-	public static Operand CreateAndGetResultingOperand(List<CalculatorItem> items)
+	public static Operand CreateAndGetOperationResult(List<CalculatorItem> items)
 	{
 		if (items == null)
 		{

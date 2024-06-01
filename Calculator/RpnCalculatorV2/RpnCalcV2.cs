@@ -1,5 +1,6 @@
 ﻿using Calculator.UI;
 using Calculator.Utilities;
+using System;
 
 namespace Calculator.RpnCalculatorV2;
 
@@ -9,30 +10,7 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 	private readonly List<CalculatorItem> _items = [];
 	public int ItemCount => _items.Count;
 
-	public static class Message
-	{
-		public static string AddedOperand(double value) => $"Added number: {value}";
-		public static string AddedOperator(Operator @operator) => $"Added operator: {@operator}";
-		public static readonly string RemoveItemFail = $"Cannot remove item, sequence is empty";
-		public static string RemovedItem(CalculatorItem item) => $"Removed: {item}";
-		public static readonly string Cleared = $"Cleared all items";
-		public static string PrintItems(List<CalculatorItem> items) =>
-			$"[ {items.PrintCollection(" ")} ]";
-
-		public static class TryPerformOperation
-		{
-			public static readonly string StartMessage = "Performing calculation!";
-			public static string InitialItems(List<CalculatorItem> items) =>
-				$"Items:  {PrintItems(items)}";
-			public static string Error(string message) => $"Error: {message}";
-			public static string NotEnoughOperands => Error("Not enough operands");
-			public static string NotEnoughOperators => Error("Not enough operators");
-			public static string Step(List<CalculatorItem> items, int stepCount) =>
-				$"Step {stepCount}: {PrintItems(items)}";
-			public static string FinalStep(List<CalculatorItem> items, int stepCount) =>
-				$"Step {stepCount}: {PrintItems(items)} (final result)";
-		}
-	}
+	
 
 	public void AddOperand(double value)
 	{
@@ -81,20 +59,22 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 		while (workItems.Any(i => i is Operator))
 		{
 			var firstOperator = workItems.OfType<Operator>().First();
-
 			var firstOperatorIndex = workItems.IndexOf(firstOperator);
+			var firstOperandIndex = firstOperatorIndex - firstOperator.RequiredOperands;
 
-			if (firstOperatorIndex < firstOperator.RequiredOperands)
+			if (firstOperandIndex < 0)
 			{
 				_io?.PushOutput(Message.TryPerformOperation.NotEnoughOperands);
 				return null;
 			}
 
-			var (leftItems, operationItems, rightItems) = SplitList(workItems, firstOperatorIndex, firstOperator.RequiredOperands);
+			var leftItems = workItems[..firstOperandIndex];
+			var operationItems = workItems[firstOperandIndex..(firstOperatorIndex + 1)];
+			var rightItems = workItems[(firstOperatorIndex + 1)..];
 
-			var	operationResult = OperationUnit.CreateAndGetResultingOperand(operationItems);
+			var operationResult = OperationUnit.CreateAndGetOperationResult(operationItems);
 
-			workItems = [.. leftItems, operationResult, .. rightItems];
+			workItems =[.. leftItems, operationResult, .. rightItems];
 
 			if (workItems.Count > 1)
 			{
@@ -119,22 +99,28 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 	{
 		return Message.PrintItems(_items);
 	}
-
-	public static (List<T> leftItems, List<T> middleItems, List<T> rightItems) SplitList<T>(List<T> items, int index, int leftOffset)
+	public static class Message
 	{
-		if (index < leftOffset)
-		{
-			throw new ArgumentOutOfRangeException(nameof(leftOffset), "leftOffset larger than index");
-		}
-		if (leftOffset < 0)
-		{
-			throw new ArgumentOutOfRangeException(nameof(leftOffset), "leftOffset cannot be negative");
-		}
+		public static string AddedOperand(double value) => $"Added number: {value}";
+		public static string AddedOperator(Operator @operator) => $"Added operator: {@operator}";
+		public static readonly string RemoveItemFail = $"Cannot remove item, sequence is empty";
+		public static string RemovedItem(CalculatorItem item) => $"Removed: {item}";
+		public static readonly string Cleared = $"Cleared all items";
+		public static string PrintItems(List<CalculatorItem> items) =>
+			$"[ {items.PrintCollection(" ")} ]";
 
-		var leftItems = items[..(index - leftOffset)];
-		var middleItems = items[(index - leftOffset)..(index + 1)];
-		var rightItems = items[(index + 1)..];
-
-		return (leftItems, middleItems, rightItems);
+		public static class TryPerformOperation
+		{
+			public static readonly string StartMessage = "Performing calculation!";
+			public static string InitialItems(List<CalculatorItem> items) =>
+				$"Items:  {PrintItems(items)}";
+			public static string Error(string message) => $"Error: {message}";
+			public static string NotEnoughOperands => Error("Not enough operands");
+			public static string NotEnoughOperators => Error("Not enough operators");
+			public static string Step(List<CalculatorItem> items, int stepCount) =>
+				$"Step {stepCount}: {PrintItems(items)}";
+			public static string FinalStep(List<CalculatorItem> items, int stepCount) =>
+				$"Step {stepCount}: {PrintItems(items)} (final result)";
+		}
 	}
 }
