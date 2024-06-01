@@ -6,12 +6,12 @@ public class OperationUnit
 {
 	public List<Operand> Operands { get; set; }
 	public Operator Operator { get; set; }
-    private OperationUnit(List<Operand> operands, Operator @operator)
-    {
+	private OperationUnit(List<Operand> operands, Operator @operator)
+	{
 		Operands = operands;
 		Operator = @operator;
 	}
-    public static (OperationUnit? maybeOperationUnit, string errorMessage) TryCreate(List<CalculatorItem> items)
+	public static (OperationUnit? maybeOperationUnit, string errorMessage) TryCreate(List<CalculatorItem> items)
 	{
 		if (items.Count < 1)
 		{
@@ -35,18 +35,37 @@ public class OperationUnit
 		return (new OperationUnit(operands, @operator), ErrorMessage.TryCreate.Success);
 	}
 
-	public static Operand? TryCreateAndGetResultingOperand(List<CalculatorItem> items)
+	public static Operand CreateAndGetResultingOperand(List<CalculatorItem> items)
 	{
-		try
+		if (items == null)
 		{
-			var opUnit = new OperationUnit(items[..^1].Cast<Operand>().ToList(), (Operator)items[^1]);
-			var result = opUnit.GetResult();
-			return new Operand(result);
+			throw new ArgumentNullException(nameof(items), ErrorMessage.TryCreate.NoItems);
 		}
-		catch (Exception)
+
+		if (items.Count < 1)
 		{
-			return null;
+			throw new ArgumentException(ErrorMessage.TryCreate.NoItems, nameof(items));
 		}
+
+		if (items.OfType<Operator>().Count() > 1)
+		{
+			throw new ArgumentException(ErrorMessage.TryCreate.TooManyOperators, nameof(items));
+		}
+
+		if (items.Last() is not Operator @operator)
+		{
+			throw new ArgumentException(ErrorMessage.TryCreate.LastItemNotOperator, nameof(items));
+		}
+
+		var operands = items.OfType<Operand>().ToList();
+		if (operands.Count != @operator.RequiredOperands)
+		{
+			throw new ArgumentException(ErrorMessage.TryCreate.WrongNumberOperands(@operator.RequiredOperands, operands.Count), nameof(items));
+		}
+
+		var operationUnit = new OperationUnit(operands, @operator);
+		var result = operationUnit.GetResult();
+		return new Operand(result);
 	}
 
 	public double GetResult()

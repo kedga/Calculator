@@ -92,26 +92,9 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 
 			var (leftItems, operationItems, rightItems) = SplitList(workItems, operatorIndex, @operator.RequiredOperands);
 
-			double operationResult;
-			try
-			{
-				var (maybeOperationUnit, errorMessage) = OperationUnit.TryCreate(operationItems);
+			var	operationResult = OperationUnit.CreateAndGetResultingOperand(operationItems);
 
-				if (maybeOperationUnit is not OperationUnit validOperationUnit)
-				{
-					_io?.PushOutput(Message.TryPerformOperation.Error(errorMessage));
-					return null;
-				}
-				operationResult = validOperationUnit.GetResult();
-			}
-			catch (Exception ex)
-			{
-				_io?.PushOutput(Message.TryPerformOperation.Error(ex.Message));
-				return null;
-			}
-
-			var newOperand = new Operand(operationResult);
-			workItems = [.. leftItems, newOperand, .. rightItems];
+			workItems = [.. leftItems, operationResult, .. rightItems];
 
 			if (workItems.Count > 1)
 			{

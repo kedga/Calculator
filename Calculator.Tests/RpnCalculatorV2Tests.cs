@@ -84,23 +84,19 @@ namespace Calculator.Tests
 			_calculator.AddOperator(operator3);
 			_calculator.AddOperator(operator4);
 
-			var result1 = OperationUnit.TryCreateAndGetResultingOperand([operand1, operand2, operator1]);
+			var sequence1 = new List<CalculatorItem>() { operand1, operand2, operator1, operand3, operator2, operand4, operand5, operator3, operator4 };
+			var result1 = OperationUnit.CreateAndGetResultingOperand([operand1, operand2, operator1]);
 
-			var result2 = OperationUnit.TryCreateAndGetResultingOperand([result1!, operand3, operator2]);
+			var sequence2 = new List<CalculatorItem>() { result1!, operand3, operator2, operand4, operand5, operator3, operator4 };
+			var result2 = OperationUnit.CreateAndGetResultingOperand([result1!, operand3, operator2]);
 
-			var result3 = OperationUnit.TryCreateAndGetResultingOperand([operand4, operand5, operator3]);
+			var sequence3 = new List<CalculatorItem>() { result2!, operand4, operand5, operator3, operator4 };
+			var result3 = OperationUnit.CreateAndGetResultingOperand([operand4, operand5, operator3]);
 
-			var result4 = OperationUnit.TryCreateAndGetResultingOperand([result2!, result3!, operator4]);
+			var sequence4 = new List<CalculatorItem>() { result2!, result3!, operator4 };
+			var result4 = OperationUnit.CreateAndGetResultingOperand([result2!, result3!, operator4]);
 
-			var sequence0 = new List<CalculatorItem>() { operand1, operand2, operator1, operand3, operator2, operand4, operand5, operator3, operator4 };
-
-			var sequence1 = new List<CalculatorItem>() { result1!, operand3, operator2, operand4, operand5, operator3, operator4 };
-
-			var sequence2 = new List<CalculatorItem>() { result2!, operand4, operand5, operator3, operator4 };
-
-			var sequence3 = new List<CalculatorItem>() { result2!, result3!, operator4 };
-
-			var sequence4 = new List<CalculatorItem>() { result4! };
+			var sequence5 = new List<CalculatorItem>() { result4! };
 
 			// Act
 			var result = _calculator.TryPerformOperation();
@@ -109,11 +105,11 @@ namespace Calculator.Tests
 			Assert.NotNull(result);
 			Assert.Equal(9, result.Value);
 			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.StartMessage), Times.Once);
-			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.InitialItems(sequence0)), Times.Once);
-			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence1, 1)), Times.Once);
-			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence2, 2)), Times.Once);
-			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence3, 3)), Times.Once);
-			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.FinalStep(sequence4, 4)), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.InitialItems(sequence1)), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence2, 1)), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence3, 2)), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence4, 3)), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.FinalStep(sequence5, 4)), Times.Once);
 		}
 
 		[Fact]
