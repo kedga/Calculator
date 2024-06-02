@@ -20,21 +20,35 @@ public class ConsoleLikeRpnCalculatorV2(IRpnCalculator calculator, IBasicIO io)
 
 	public void Run()
     {
+		PrintCommands();
+
 		while (true)
         {
-            if (_calculator.ItemCount < 1)
-            {
-				PrintCommands();
-            }
-
             string input = _columnIO.GetInput().ToLower();
-			if (string.IsNullOrWhiteSpace(input)) continue;
-
-			if (input.Equals(_performOperationCmd)) _calculator.TryPerformOperation();
-			else if (input.Equals(_clearIoCmd)) _calculator.Clear();
-			else if (input.Equals(_removeItemCmd)) _calculator.RemoveLastItem();
+			if (string.IsNullOrWhiteSpace(input))
+			{
+				PrintCommands();
+				continue;
+			}
+			else if (input.Equals(_performOperationCmd))
+			{
+				_calculator.TryPerformOperation();
+				continue;
+			}
+			else if (input.Equals(_clearIoCmd))
+			{
+				_calculator.Clear();
+				continue;
+			}
+			else if (input.Equals(_removeItemCmd))
+			{
+				_calculator.RemoveLastItem();
+				continue;
+			}
 			else if (input.Equals(_quitCmd)) break;
-			else _parser.TryAddItem(input, _calculator);
+			else if (_parser.TryAddItem(input, _calculator)) continue;
+
+			PrintCommands();
 		}
 	}
 
@@ -46,5 +60,7 @@ public class ConsoleLikeRpnCalculatorV2(IRpnCalculator calculator, IBasicIO io)
 		_columnIO.PushOutput([_quitCmd, "Quit"]);
 		_columnIO.PushOutput([_clearIoCmd, "Clear numbers"]);
 		_columnIO.PushOutput([_performOperationCmd, "Perform calculation"]);
+		_columnIO.PushOutput();
+		_calculator.PrintStackContents();
 	}
 }
