@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Calculator.RpnCalculatorV2;
 
-public class RpnCalcStringParser(IBasicIO? io = null)
+public class RpnCalcStringParser
 {
 	public bool TryAddItem(string input, IRpnCalculator calculator)
 	{
@@ -21,7 +21,7 @@ public class RpnCalcStringParser(IBasicIO? io = null)
 			calculator.AddOperator(@operator);
 			return true;
 		}
-		io?.PushOutput("Unknown input: " + input);
+		calculator.PrintErrorMessage($"Unknown input, \"{input}\"");
 		return false;
 	}
 

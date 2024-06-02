@@ -72,7 +72,7 @@ public class RpnCalcStringParserTests
 		_parser.TryAddItem("5", _calc);
 
 		// Act
-		var contents = _calc.PrintStackContents();
+		var contents = _calc.GetStackContentsAsString();
 
 		// Assert
 		Assert.Equal("[ 3 5 ]", contents);

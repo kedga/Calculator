@@ -8,7 +8,7 @@ namespace Calculator.UI;
 
 public interface IBasicIO
 {
-	void PushOutput(string text);
+	void PushOutput(params string?[] text);
 	string GetInput();
 	void Clear();
 }

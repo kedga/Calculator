@@ -6,44 +6,45 @@ namespace Calculator.RpnCalculatorV2;
 public class ConsoleLikeRpnCalculatorV2(IRpnCalculator calculator, IBasicIO io)
 {
 	protected readonly IRpnCalculator _calculator = calculator;
-	private readonly RpnCalcStringParser _parser = new(io);
+	private readonly RpnCalcStringParser _parser = new();
+	protected readonly IBasicIO _columnIO = new IOColumnsFormatter(io)
+	{
+		StringFormat = ["{0, -20}", "{1, -20}"],
+		Separator = " : "
+	};
+
+	const string _performOperationCmd = "p";
+	const string _clearIoCmd = "c";
+	const string _quitCmd = "q";
+	const string _removeItemCmd = "r";
 
 	public void Run()
     {
-        const string performOperationCmd = "p";
-		const string clearIoCmd = "c";
-		const string quitCmd = "q";
-		const string removeItemCmd = "r";
-
-		const string basePrompt = @$"
-Commands:
-
-number          : Add a number
-+ - / * exp sin : Add an operator
-{quitCmd}               : Quit
-{clearIoCmd}               : Clear numbers
-{removeItemCmd}               : Remove last item from sequence
-{performOperationCmd}               : Perform calculation
-";
-
 		while (true)
         {
             if (_calculator.ItemCount < 1)
             {
-				io.PushOutput(basePrompt);
+				PrintCommands();
             }
 
-			io.PushOutput(_calculator.PrintStackContents());
-
-            string input = io.GetInput().ToLower();
-
+            string input = _columnIO.GetInput().ToLower();
 			if (string.IsNullOrWhiteSpace(input)) continue;
 
-			if (input.Equals(performOperationCmd)) _calculator.TryPerformOperation();
-			else if (input.Equals(clearIoCmd)) _calculator.Clear();
-			else if (input.Equals(removeItemCmd)) _calculator.RemoveLastItem();
-			else if (input.Equals(quitCmd)) break;
+			if (input.Equals(_performOperationCmd)) _calculator.TryPerformOperation();
+			else if (input.Equals(_clearIoCmd)) _calculator.Clear();
+			else if (input.Equals(_removeItemCmd)) _calculator.RemoveLastItem();
+			else if (input.Equals(_quitCmd)) break;
 			else _parser.TryAddItem(input, _calculator);
 		}
+	}
+
+	private void PrintCommands()
+	{
+		_columnIO.PushOutput(["[ Commands ]"]);
+		_columnIO.PushOutput(["number", "Add a number"]);
+		_columnIO.PushOutput(["+ - / * exp sin", "Add an operator"]);
+		_columnIO.PushOutput([_quitCmd, "Quit"]);
+		_columnIO.PushOutput([_clearIoCmd, "Clear numbers"]);
+		_columnIO.PushOutput([_performOperationCmd, "Perform calculation"]);
 	}
 }

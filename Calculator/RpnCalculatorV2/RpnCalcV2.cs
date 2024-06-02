@@ -1,16 +1,25 @@
 ﻿using Calculator.UI;
 using Calculator.Utilities;
 using System;
+using System.Collections.Generic;
 
 namespace Calculator.RpnCalculatorV2;
 
 public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 {
-	protected readonly IBasicIO? _io = io;
-	private readonly List<CalculatorItem> _items = [];
-	public int ItemCount => _items.Count;
+	protected readonly IBasicIO? _columnIO = new IOColumnsFormatter(io)
+	{
+		StringFormat = ["{0, 20}", "{1, -20}"],
+		Separator = " : "
+	};
+	protected readonly IBasicIO? _centerIO = new IOCenterFormatter(io)
+	{
+		CenterPosition = 22
+	};
 
-	
+	private readonly List<CalculatorItem> _items = [];
+
+	public int ItemCount => _items.Count;
 
 	public void AddOperand(double value)
 	{
@@ -20,41 +29,41 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 	public void AddOperand(Operand operand)
 	{
 		_items.Add(operand);
-		_io?.PushOutput(Message.AddedOperand(operand.Value));
+		_columnIO?.PushOutput(Message.AddedOperand(operand.Value), Message.PrintItems(_items));
 	}
 
 	public void AddOperator(Operator @operator)
 	{
 		_items.Add(@operator);
-		_io?.PushOutput(Message.AddedOperator(@operator));
+		_columnIO?.PushOutput(Message.AddedOperator(@operator), Message.PrintItems(_items));
 	}
 
 	public void RemoveLastItem()
 	{
 		if (_items.Count < 1)
 		{
-			_io?.PushOutput(Message.RemoveItemFail);
+			_centerIO?.PushOutput(Message.RemoveItemFail);
 			return;
 		}
 
 		var lastItem = _items[^1];
 		_items.RemoveAt(_items.Count - 1);
-		_io?.PushOutput(Message.RemovedItem(lastItem));
+		_columnIO?.PushOutput(Message.RemovedItem(lastItem), Message.PrintItems(_items));
 	}
 
 	public void Clear()
 	{
 		_items.Clear();
-		_io?.PushOutput(Message.Cleared);
+		_centerIO?.PushOutput(Message.Cleared);
 	}
 
 	public double? TryPerformOperation()
 	{
-		_io?.PushOutput(Message.TryPerformOperation.StartMessage);
-		_io?.PushOutput(Message.TryPerformOperation.InitialItems(_items));
+		_centerIO?.PushOutput(Message.TryPerformOperation.StartMessage);
+		_columnIO?.PushOutput(string.Empty);
+		_columnIO?.PushOutput(Message.TryPerformOperation.InitialItems(_items));
 
 		var workItems = _items.ToList();
-		var stepCount = 1;
 
 		while (workItems.Any(i => i is Operator))
 		{
@@ -64,7 +73,7 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 
 			if (firstOperandIndex < 0)
 			{
-				_io?.PushOutput(Message.TryPerformOperation.NotEnoughOperands);
+				_centerIO?.PushOutput(Message.TryPerformOperation.NotEnoughOperands);
 				return null;
 			}
 
@@ -72,33 +81,39 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 			var operationItems = workItems[firstOperandIndex..(firstOperatorIndex + 1)];
 			var rightItems = workItems[(firstOperatorIndex + 1)..];
 
-			var operationResult = OperationUnit.CreateAndGetOperationResult(operationItems);
+			var operationUnit = OperationUnit.Create(operationItems);
 
-			workItems =[.. leftItems, operationResult, .. rightItems];
+			workItems = [.. leftItems, operationUnit.GetResultAsOperand(), .. rightItems];
 
-			if (workItems.Count > 1)
+			_columnIO?.PushOutput($"({operationUnit.GetOperationAsString()})", Message.PrintItems(workItems));
+
+			if (workItems.Count == 1 && workItems.First() is Operand operand)
 			{
-				_io?.PushOutput(Message.TryPerformOperation.Step(workItems, stepCount));
-			}
-			else if (workItems.First() is Operand operand)
-			{
-				_io?.PushOutput(Message.TryPerformOperation.FinalStep(workItems, stepCount));
+				_items.Clear();
+				_items.Add(operand);
 				return operand.Value;
 			}
-
-			stepCount++;
 		}
 
-		_io?.PushOutput(Message.TryPerformOperation.NotEnoughOperators);
+		_centerIO?.PushOutput(Message.TryPerformOperation.NotEnoughOperators);
 		return null;
 	}
 
-	public string PrintStackContents() => ToString();
-
-	public override string ToString()
+	public void PrintStackContents()
+	{
+		_columnIO?.PushOutput([null, Message.PrintItems(_items)]);
+	}
+	public string GetStackContentsAsString()
 	{
 		return Message.PrintItems(_items);
 	}
+	public void PrintErrorMessage(string message)
+	{
+		_centerIO?.PushOutput(Message.Error(message));
+	}
+
+	private record OperationIterationInformation(List<CalculatorItem> WorkItems, int StepCount, string OperationAsString);
+
 	public static class Message
 	{
 		public static string AddedOperand(double value) => $"Added number: {value}";
@@ -108,19 +123,17 @@ public class RpnCalcV2(IBasicIO? io = null) : IRpnCalculator
 		public static readonly string Cleared = $"Cleared all items";
 		public static string PrintItems(List<CalculatorItem> items) =>
 			$"[ {items.PrintCollection(" ")} ]";
+		public static string Error(string message) => $"Error: " + message;
 
 		public static class TryPerformOperation
 		{
 			public static readonly string StartMessage = "Performing calculation!";
-			public static string InitialItems(List<CalculatorItem> items) =>
-				$"Items:  {PrintItems(items)}";
-			public static string Error(string message) => $"Error: {message}";
+			public static string[] InitialItems(List<CalculatorItem> items) =>
+				[$"Initial", PrintItems(items)];
+			public static string[] Step(List<CalculatorItem> items, string operationString) =>
+				[$"({operationString})", PrintItems(items)];
 			public static string NotEnoughOperands => Error("Not enough operands");
 			public static string NotEnoughOperators => Error("Not enough operators");
-			public static string Step(List<CalculatorItem> items, int stepCount) =>
-				$"Step {stepCount}: {PrintItems(items)}";
-			public static string FinalStep(List<CalculatorItem> items, int stepCount) =>
-				$"Step {stepCount}: {PrintItems(items)} (final result)";
 		}
 	}
 }

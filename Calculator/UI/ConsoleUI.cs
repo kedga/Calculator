@@ -8,9 +8,12 @@ namespace Calculator.UI;
 
 public class ConsoleUI : ICanMakeSelectionIO
 {
-	public void PushOutput(string text)
+	public void PushOutput(params string?[] text)
 	{
-		Console.WriteLine(text);
+		foreach (var item in text)
+		{
+			Console.WriteLine(item);
+		}
 	}
 
 	public string GetInput()

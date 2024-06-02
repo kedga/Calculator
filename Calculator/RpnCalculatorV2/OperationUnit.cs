@@ -2,7 +2,7 @@
 
 namespace Calculator.RpnCalculatorV2;
 
-public class OperationUnit
+public record OperationUnit
 {
 	public List<Operand> Operands { get; set; }
 	public Operator Operator { get; set; }
@@ -11,6 +11,20 @@ public class OperationUnit
 		Operands = operands;
 		Operator = @operator;
 	}
+
+	public double GetResult()
+	{
+		var operation = Operator.Operation;
+		return operation(Operands);
+	}
+
+	public Operand GetResultAsOperand()
+	{
+		var operation = Operator.Operation;
+		var result = operation(Operands);
+		return new Operand(result);
+	}
+
 	public static (OperationUnit? maybeOperationUnit, string errorMessage) TryCreate(List<CalculatorItem> items)
 	{
 		if (items.Count < 1)
@@ -35,9 +49,9 @@ public class OperationUnit
 		return (new OperationUnit(operands, @operator), ErrorMessage.TryCreate.Success);
 	}
 
-	public static Operand CreateAndGetOperationResult(List<CalculatorItem> items)
+	public static OperationUnit Create(List<CalculatorItem> items)
 	{
-		if (items == null)
+		if (items is null)
 		{
 			throw new ArgumentNullException(nameof(items), ErrorMessage.TryCreate.NoItems);
 		}
@@ -63,15 +77,25 @@ public class OperationUnit
 			throw new ArgumentException(ErrorMessage.TryCreate.WrongNumberOperands(@operator.RequiredOperands, operands.Count), nameof(items));
 		}
 
-		var operationUnit = new OperationUnit(operands, @operator);
+		return new OperationUnit(operands, @operator);
+	}
+
+	public static Operand CreateAndGetOperationResult(List<CalculatorItem> items)
+	{
+		var operationUnit = Create(items);
 		var result = operationUnit.GetResult();
 		return new Operand(result);
 	}
 
-	public double GetResult()
+	public string GetOperationAsString()
 	{
-		var operation = Operator.Operation;
-		return operation(Operands);
+		return Operator.GetOperationString(this);
+	}
+
+	public static string GetOperationAsString(List<CalculatorItem> items)
+	{
+		var operationUnit = Create(items);
+		return operationUnit.GetOperationAsString();
 	}
 
 	public static class ErrorMessage
