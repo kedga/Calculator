@@ -7,7 +7,7 @@ public class ConsoleLikeRpnCalculatorV2(IRpnCalculator calculator, IBasicIO io)
 {
 	protected readonly IRpnCalculator _calculator = calculator;
 	private readonly RpnCalcStringParser _parser = new();
-	protected readonly IBasicIO _columnIO = new IOColumnsFormatter(io)
+	protected readonly ColumnsFormatterIO _columns = new(io)
 	{
 		StringFormat = ["{0, -20}", "{1, -20}"],
 		Separator = " : "
@@ -24,7 +24,7 @@ public class ConsoleLikeRpnCalculatorV2(IRpnCalculator calculator, IBasicIO io)
 
 		while (true)
         {
-            string input = _columnIO.GetInput().ToLower();
+            string input = _columns.GetInput().ToLower();
 			if (string.IsNullOrWhiteSpace(input))
 			{
 				PrintCommands();
@@ -54,13 +54,13 @@ public class ConsoleLikeRpnCalculatorV2(IRpnCalculator calculator, IBasicIO io)
 
 	private void PrintCommands()
 	{
-		_columnIO.PushOutput(["[ Commands ]"]);
-		_columnIO.PushOutput(["number", "Add a number"]);
-		_columnIO.PushOutput(["+ - / * exp sin", "Add an operator"]);
-		_columnIO.PushOutput([_quitCmd, "Quit"]);
-		_columnIO.PushOutput([_clearIoCmd, "Clear numbers"]);
-		_columnIO.PushOutput([_performOperationCmd, "Perform calculation"]);
-		_columnIO.PushOutput();
+		_columns.PushOutput(["[ Commands ]"]);
+		_columns.PushOutput(["number", "Add a number"]);
+		_columns.PushOutput(["+ - / * exp sin", "Add an operator"]);
+		_columns.PushOutput([_quitCmd, "Quit"]);
+		_columns.PushOutput([_clearIoCmd, "Clear numbers"]);
+		_columns.PushOutput([_performOperationCmd, "Perform calculation"]);
+		_columns.PushOutput();
 		_calculator.PrintStackContents();
 	}
 }

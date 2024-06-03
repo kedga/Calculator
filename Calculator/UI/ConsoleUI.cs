@@ -8,12 +8,19 @@ namespace Calculator.UI;
 
 public class ConsoleUI : ICanMakeSelectionIO
 {
+	public bool RequireFormattedString { get; set; }
+
 	public void PushOutput(params string?[] text)
 	{
 		foreach (var item in text)
 		{
 			Console.WriteLine(item);
 		}
+	}
+
+	public void PushOutput(FormattedString formattedString)
+	{
+		Console.WriteLine(formattedString.String);
 	}
 
 	public string GetInput()
@@ -114,4 +121,5 @@ public class ConsoleUI : ICanMakeSelectionIO
 
 		return selectedOption == opt.YesOption;
 	}
+
 }

@@ -12,10 +12,25 @@ namespace Calculator.Tests
 		private readonly Mock<IBasicIO> _mockIo;
 		private readonly RpnCalcV2 _calculator;
 
+		private readonly IBasicIO _columnIO;
+		private readonly IBasicIO _centerIO;
+
 		public RpnCalculatorV2Tests()
 		{
 			_mockIo = new Mock<IBasicIO>();
-			_calculator = new RpnCalcV2(_mockIo.Object);
+
+			//_columnIO = new ColumnsFormatterIO(_mockIo.Object)
+			//{
+			//	StringFormat = ["{0, 20}", "{1, -20}"],
+			//	Separator = " : "
+			//};
+			//_centerIO = new CenterFormatterIO(_mockIo.Object)
+			//{
+			//	CenterPosition = 22
+			//};
+
+			_calculator = new RpnCalcV2();
+
 		}
 
 		[Fact]
@@ -29,7 +44,7 @@ namespace Calculator.Tests
 
 			// Assert
 			Assert.Equal(1, _calculator.ItemCount);
-			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.AddedOperand(operand)), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains(RpnCalcV2.Message.AddedOperand(operand)))), Times.Once);
 		}
 
 		[Fact]
@@ -43,7 +58,7 @@ namespace Calculator.Tests
 
 			// Assert
 			Assert.Equal(1, _calculator.ItemCount);
-			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.AddedOperator(@operator)), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains(RpnCalcV2.Message.AddedOperator(@operator)))), Times.Once);
 		}
 
 		[Fact]
@@ -85,16 +100,20 @@ namespace Calculator.Tests
 			_calculator.AddOperator(operator4);
 
 			var sequence1 = new List<CalculatorItem>() { operand1, operand2, operator1, operand3, operator2, operand4, operand5, operator3, operator4 };
-			var result1 = OperationUnit.CreateAndGetOperationResult([operand1, operand2, operator1]);
+			var operationUnit1 = OperationUnit.Create([operand1, operand2, operator1]);
+			var result1 = operationUnit1.GetResultAsOperand();
 
 			var sequence2 = new List<CalculatorItem>() { result1!, operand3, operator2, operand4, operand5, operator3, operator4 };
-			var result2 = OperationUnit.CreateAndGetOperationResult([result1!, operand3, operator2]);
+			var operationUnit2 = OperationUnit.Create([result1!, operand3, operator2]);
+			var result2 = operationUnit2.GetResultAsOperand();
 
 			var sequence3 = new List<CalculatorItem>() { result2!, operand4, operand5, operator3, operator4 };
-			var result3 = OperationUnit.CreateAndGetOperationResult([operand4, operand5, operator3]);
+			var operationUnit3 = OperationUnit.Create([operand4, operand5, operator3]);
+			var result3 = operationUnit3.GetResultAsOperand();
 
 			var sequence4 = new List<CalculatorItem>() { result2!, result3!, operator4 };
-			var result4 = OperationUnit.CreateAndGetOperationResult([result2!, result3!, operator4]);
+			var operationUnit4 = OperationUnit.Create([result2!, result3!, operator4]);
+			var result4 = operationUnit4.GetResultAsOperand();
 
 			var sequence5 = new List<CalculatorItem>() { result4! };
 
@@ -104,12 +123,12 @@ namespace Calculator.Tests
 			// Assert
 			//Assert.NotNull(result);
 			//Assert.Equal(9, result.Value);
-			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.StartMessage), Times.Once);
-			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.InitialItems(sequence1)), Times.Once);
-			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence2, 1)), Times.Once);
-			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence3, 2)), Times.Once);
-			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence4, 3)), Times.Once);
-			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.FinalStep(sequence5, 4)), Times.Once);
+			//_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains(RpnCalcV2.Message.TryPerformOperation.StartMessage))), Times.Once);
+			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.InitialItemsHeader(sequence1)), Times.Once);
+			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence2, operationUnit1.GetOperationAsString())), Times.Once);
+			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence3, operationUnit2.GetOperationAsString())), Times.Once);
+			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence4, operationUnit3.GetOperationAsString())), Times.Once);
+			//_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.Step(sequence5, operationUnit4.GetOperationAsString())), Times.Once);
 		}
 
 		[Fact]
@@ -124,7 +143,7 @@ namespace Calculator.Tests
 
 			// Assert
 			Assert.Null(result);
-			_mockIo.Verify(io => io.PushOutput(RpnCalcV2.Message.TryPerformOperation.NotEnoughOperands), Times.Once);
+			_mockIo.Verify(io => io.PushOutput(It.Is<string>(s => s.Contains(RpnCalcV2.Message.TryPerformOperation.NotEnoughOperands))), Times.Once);
 		}
 
 		[Fact]

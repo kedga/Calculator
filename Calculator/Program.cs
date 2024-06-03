@@ -32,7 +32,17 @@ class Program
 
 		else if (rootOption == RootOption.RpnCalcV2)
 		{
-			var calculator = new ConsoleLikeRpnCalculatorV2(new RpnCalcV2(ui),ui);
+			var _columnIO = new ColumnsFormatterIO(ui)
+			{
+				StringFormat = ["{0, 20}", "{1, -20}"],
+				Separator = " : "
+			};
+			var _centerIO = new CenterFormatterIO(ui)
+			{
+				CenterPosition = 22
+			};
+
+			var calculator = new ConsoleLikeRpnCalculatorV2(new RpnCalcV2(ui), ui);
 
 			calculator.Run();
 		}
@@ -46,9 +56,9 @@ class Program
 
 public record RootOption(string Name)
 {
-	public static RootOption RpnCalc { get; } = new ("Reverse Polish notation calculator");
+	public static RootOption RpnCalc { get; } = new("Reverse Polish notation calculator");
 	public static RootOption RpnCalcV2 { get; } = new("Reverse Polish notation calculator V2");
-	public static RootOption SequenceCalc { get; } = new ("Non-reverse sequence calculator");
+	public static RootOption SequenceCalc { get; } = new("Non-reverse sequence calculator");
 
 	public static List<RootOption> GetOptions() => [RpnCalcV2, RpnCalc, SequenceCalc];
 }

@@ -12,10 +12,29 @@ public class ConsoleLikeRpnCalculatorV2Tests
 	private readonly Mock<IBasicIO> _mockIo;
 	private readonly ConsoleLikeRpnCalculatorV2 _consoleCalculator;
 
+	private readonly RpnCalcV2 _calculator;
+
+	private readonly IBasicIO _columnIO;
+	private readonly IBasicIO _centerIO;
+
 	public ConsoleLikeRpnCalculatorV2Tests()
 	{
 		_mockIo = new Mock<IBasicIO>();
-		_consoleCalculator = new ConsoleLikeRpnCalculatorV2(new RpnCalcV2(_mockIo.Object),_mockIo.Object);
+
+		_columnIO = new ColumnsFormatterIO(_mockIo.Object)
+		{
+			StringFormat = ["{0, 20}", "{1, -20}"],
+			Separator = " : "
+		};
+		_centerIO = new CenterFormatterIO(_mockIo.Object)
+		{
+			CenterPosition = 22
+		};
+
+		_calculator = new RpnCalcV2();
+
+		_mockIo = new Mock<IBasicIO>();
+		_consoleCalculator = new ConsoleLikeRpnCalculatorV2(_calculator, _mockIo.Object);
 	}
 
 	[Fact]
